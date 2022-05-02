@@ -3,6 +3,8 @@ import random as rand
 import time
 import math
 
+from jmespath import search
+
 def GenerateDataSet(num):
     dataset = {}
     for i in range(num):
@@ -10,31 +12,43 @@ def GenerateDataSet(num):
     return dataset
 
 max = GenerateDataSet(10000)
-medium = GenerateDataSet(50)
+medium = GenerateDataSet(2500)
 min = GenerateDataSet(25)
+searchTerm = 5
+
 times = time.perf_counter_ns
 timesName = " NanoSeconds"
-bigO = 25
-bigODivders = [1,1.2,2,2.3,4,8,33000000]
+bigO = 500
+bigODivders = [1,1.2,2,2.35,4,8,33000000]
 bigOFound = 1
+
+
+
 def BigOCal(method):
+    first = GenerateDataSet(bigO)
+    second = GenerateDataSet(bigO*2)
     start = time.perf_counter_ns()
-    method(GenerateDataSet(bigO))
+    method(first)
     end = time.perf_counter_ns()
     timeO1 = end-start
+
     start = time.perf_counter_ns()
-    method(GenerateDataSet(bigO*2))
+    method(second)
     end = time.perf_counter_ns()
     timeO2 = end-start
-    bigOFound = 1
-    bestDiff = math.sqrt((timeO1-(math.sqrt((timeO2/bigODivders[4])**2)))**2)
+
+    bigOFound = 0
+    bestDiff = timeO2*2
+
     for i in range (1,len(bigODivders)):
-        diff = timeO1-(math.sqrt((timeO2/bigODivders[i])**2))
-        print(str(i)+": "+str(diff))
-        if  bestDiff>math.sqrt((timeO1-(math.sqrt((timeO2/bigODivders[i])**2)))**2):
-            bestDiff =math.sqrt((timeO1-(math.sqrt((timeO2/bigODivders[i])**2)))**2)
+        diff = math.sqrt((timeO1-(timeO2/bigODivders[i]))**2)
+      #  print(str(i)+": "+str(diff))
+        if  bestDiff>diff:
+            bestDiff = diff
             bigOFound = i
-    if bigOFound == 0:
+
+
+    if timeO1 == timeO2:
         print("O(1)")
     elif bigOFound == 1:
         print("O(log(N))")
@@ -50,7 +64,10 @@ def BigOCal(method):
         print("O(2^N)")
 
     likelyhood = ((timeO2/bigODivders[bigOFound])/timeO1)*100
-    print(str(likelyhood)+"%")
+    print("likelyhood: "+str(likelyhood)+"%")
+    print()
+    print("----------------------------------------------------------------------------------------------------------------")
+    print()
    
     
 
@@ -89,8 +106,21 @@ def Algorithms():
   
     TestAlgorithm(BubbleSort)
     TestAlgorithm(insertionSort)
+    TestAlgorithm(binary_search)
     
-    
+def binary_search(arr):
+    item = 5
+    first = 0
+    last = len(arr) - 1
+    while(first <= last):
+	    mid = (first + last) // 2
+        if arr[mid] == item:
+		    return True
+	    elif item < arr[mid]:
+		    last = mid - 1
+		else:
+		    first = mid + 1	
+	return False
 
 def insertionSort(array):
 
