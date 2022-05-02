@@ -12,18 +12,23 @@ def GenerateDataSet(num):
     return dataset
 
 max = GenerateDataSet(10000)
-medium = GenerateDataSet(2500)
+medium = GenerateDataSet(500)
 min = GenerateDataSet(25)
 searchTerm = 5
 
 times = time.perf_counter_ns
 timesName = " NanoSeconds"
-bigO = 500
+bigO = 50
 bigODivders = [1,1.2,2,2.35,4,8,33000000]
 bigOFound = 1
 
 
-
+def printTime(time):
+    if time/1000000000 < 0:
+        print(str(time/1000000000)+" Seconds")
+    else:
+        print(str(time)+" Nanoseconds")
+    
 def BigOCal(method):
     first = GenerateDataSet(bigO)
     second = GenerateDataSet(bigO*2)
@@ -39,7 +44,7 @@ def BigOCal(method):
 
     bigOFound = 0
     bestDiff = timeO2*2
-
+    diff = 0
     for i in range (1,len(bigODivders)):
         diff = math.sqrt((timeO1-(timeO2/bigODivders[i]))**2)
       #  print(str(i)+": "+str(diff))
@@ -63,7 +68,8 @@ def BigOCal(method):
     elif bigOFound == 6:
         print("O(2^N)")
 
-    likelyhood = ((timeO2/bigODivders[bigOFound])/timeO1)*100
+    
+    likelyhood = ((diff)/timeO1)*100
     print("likelyhood: "+str(likelyhood)+"%")
     print()
     print("----------------------------------------------------------------------------------------------------------------")
@@ -89,16 +95,16 @@ def TestAlgorithm(method):
         if time1 == 0:
             time1 = (end-start)
             print("Time"+str(k+1)+":",end="      ")
-            print(str(time1)+timesName)
+            printTime(time1)
             
         elif time2 == 0:
             time2 = end -start
             print("Time"+str(k+1)+":",end="      ")
-            print(str(time2)+timesName)
+            printTime(time2)
         elif time3 == 0:
             time3 = end-start
             print("Time"+str(k+1)+":",end="      ")
-            print(str(time3)+timesName)
+            printTime(time3)
     BigOCal(method)
         
 
@@ -106,21 +112,10 @@ def Algorithms():
   
     TestAlgorithm(BubbleSort)
     TestAlgorithm(insertionSort)
-    TestAlgorithm(binary_search)
+    TestAlgorithm(TestAlg)
     
-def binary_search(arr):
-    item = 5
-    first = 0
-    last = len(arr) - 1
-    while(first <= last):
-	    mid = (first + last) // 2
-        if arr[mid] == item:
-		    return True
-	    elif item < arr[mid]:
-		    last = mid - 1
-		else:
-		    first = mid + 1	
-	return False
+    
+
 
 def insertionSort(array):
 
@@ -148,7 +143,9 @@ def BubbleSort(dataset):
            
     return dataset
 
-
+def TestAlg(dataset):
+    for i in range(len(dataset)):
+        a = i+i
 def __init__():
      Algorithms()
 
