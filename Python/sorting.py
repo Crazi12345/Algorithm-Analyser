@@ -1,8 +1,11 @@
+#import datastructures
 from array import array
 from functools import wraps
 import math
 import time as t
 import random as rand
+import sys
+sys.setrecursionlimit(20000)
 
 scale_factor = 10
 
@@ -33,10 +36,10 @@ largePatternDataset = []
 
 expected_scale_factors = {
         "O(1)": 1,
-        "O(log n)": math.log(scale_factor),
+        "O(log n)": math.log(scale_factor,2),
         "O(sqrt(n))": math.sqrt(scale_factor),
         "O(n)": scale_factor,
-        "O(n log n)": scale_factor * math.log(scale_factor),
+        "O(n log n)": scale_factor * math.log(scale_factor,2),
         "O(n²)": scale_factor ** 2,
         "O(n³)": scale_factor ** 3,
         "O(2^n)": 2 ** scale_factor,
@@ -190,17 +193,77 @@ def counting_sort(dataset):
         count[dataset[i]] -= 1
 
     return output
+
+
+def partition(array, low, high):
+
+  pivot = array[high]
+
+  i = low - 1
+
+  for j in range(low, high):
+    if array[j] <= pivot:
+      i = i + 1
+
+      (array[i], array[j]) = (array[j], array[i])
+
+  (array[i + 1], array[high]) = (array[high], array[i + 1])
+
+  return i + 1
+
+def quick_sort(array, low, high):
+  if low < high:
+
+    pi = partition(array, low, high)
+
+    quick_sort(array, low, pi - 1)
+
+    quick_sort(array, pi + 1, high)
+
+def call_quick_sort(dataset):
+    data = dataset 
+    size = len(data)
+    quick_sort(data,0,size-1)
+    return data
+def heapify(arr, n, i):
+      largest = i
+      l = 2 * i + 1
+      r = 2 * i + 2
+  
+      if l < n and arr[i] < arr[l]:
+          largest = l
+  
+      if r < n and arr[largest] < arr[r]:
+          largest = r
+  
+      if largest != i:
+          arr[i], arr[largest] = arr[largest], arr[i]
+          heapify(arr, n, largest)
+  
+  
+def heap_sort(dataset):
+      arr = dataset
+      n = len(arr)
+  
+      for i in range(n//2, -1, -1):
+          heapify(arr, n, i)
+  
+      for i in range(n-1, 0, -1):
+          arr[i], arr[0] = arr[0], arr[i]
+  
+          heapify(arr, i, 0)
+      return arr
 ###### List of algorithms
 algorithms = {
-   # 'Bubble Sort': {
-   #     'function': bubble_sort,
-   #     'worst_case': 'O(n^2)'
-   # },
+  #  'Bubble Sort': {
+  #      'function': bubble_sort,
+  #      'worst_case': 'O(n^2)'
+  #  },
     'Insertion Sort': {
         'function': insertion_sort,
         'worst_case': 'O(n^2)'
     },
-   # 'Selection Sort': {
+    #'Selection Sort': {
     #        'function': selection_sort,
      #       'worst_case': 'O(n²)'
       #  },
@@ -212,10 +275,14 @@ algorithms = {
         'function': counting_sort,
         'worst_case': 'O(n+k)'
         },
- #   'Heap Sort':{
- #       'function': heap_sort,
- #       'worst_case':'O(somethonh)'
- #       }
+    'Heap Sort':{
+        'function': heap_sort,
+        'worst_case':'O(somethonh)'
+        },
+    'Quick Sort':{
+        'function':call_quick_sort,
+        'worst_case': 'O(n^2)'
+        }
 }
 
 
